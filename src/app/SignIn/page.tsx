@@ -5,6 +5,7 @@ import {useForm} from "react-hook-form"
 import { UserBody } from "../types/page";
 import axios from "axios"
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const SignIn = (req:Request) => {
 
@@ -13,6 +14,7 @@ const SignIn = (req:Request) => {
   const router = useRouter()
 
   
+
 
   const submit = async(data:UserBody) => {
     const res= await axios.post("/api/signin",data,{withCredentials:true})
@@ -45,7 +47,7 @@ const SignIn = (req:Request) => {
 
     <p className="mt-4 text-sm text-center text-gray-600">
       Don't have an account?
-      <Link href="/sign-up" className="text-blue-600 hover:underline">SignUp</Link>
+      <Link href="/SignUp" className="text-blue-600 hover:underline">SignUp</Link>
     </p>
   </div>
 </div>

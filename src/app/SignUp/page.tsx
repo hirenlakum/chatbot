@@ -25,7 +25,7 @@ const signUp = () => {
  const res= await axios.post("/api/sign-up",data)
 if(res.data.success){
   alert('user Signup Success!!')
-  router.push("/signIn")
+  router.push("/SignIn")
 }
 
   

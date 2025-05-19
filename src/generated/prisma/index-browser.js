@@ -130,7 +130,14 @@ exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
   content: 'content',
   responce: 'responce',
-  userId: 'userId'
+  conversationId: 'conversationId'
+};
+
+exports.Prisma.ConversationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  conid: 'conid'
 };
 
 exports.Prisma.SortOrder = {
@@ -146,7 +153,8 @@ exports.Prisma.QueryMode = {
 
 exports.Prisma.ModelName = {
   user: 'user',
-  Message: 'Message'
+  Message: 'Message',
+  Conversation: 'Conversation'
 };
 
 /**

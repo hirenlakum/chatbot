@@ -15,17 +15,20 @@ export async function middleware(req: NextRequest) {
 
 
   const token = req.cookies.get("token")?.value;
+
+
+
+
   
 
-  if (!token && req.nextUrl.pathname.startsWith("/")) {
+  if (!token) {
    
     return NextResponse.redirect(new URL("/SignIn",req.url))
     
   }
+ 
 
-  if(token && (req.nextUrl.pathname==="/SignIn"||req.nextUrl.pathname==="/SignUp")){
-    return NextResponse.redirect(new URL("/",req.url))
-  }
+    
 
   try {
     const { payload } = await jwtVerify<jwtPayload>(token!, new TextEncoder().encode(process.env.SECRET_KEY!));
@@ -45,5 +48,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/chat","/api/each_user_chat","/","/SignUp","/SignIn"],
+  matcher: ["/","/api/chat","/api/user_chat_history","/api/chat/:id","/api/each_history/:id"],
 };
