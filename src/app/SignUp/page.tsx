@@ -53,7 +53,7 @@ if(res.data.success){
 
     <p className="mt-4 text-sm text-center text-gray-600">
       Already have an account?
-      <Link href="/sign-in" className="text-blue-600 hover:underline">Login</Link>
+      <Link href="/SignIn" className="text-blue-600 hover:underline">Login</Link>
     </p>
   </div>
 </div>

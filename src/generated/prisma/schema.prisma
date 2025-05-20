@@ -21,6 +21,7 @@ model Message {
   responce       String
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [conid])
+  role           String
 }
 
 model Conversation {

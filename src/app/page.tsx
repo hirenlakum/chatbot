@@ -1,24 +1,14 @@
-"use client";
-
-import { useEffect } from "react";
-
-import { useState } from "react";
-
 import ChatPage from "./components/chat";
+
 
 import { v4 as uuidv4 } from "uuid";
 
 export default function Chat(req: Request) {
-  const [cid, setCid] = useState("");
-
-  useEffect(() => {
-    const id = uuidv4();
-    setCid(id);
-  }, []);
+  const id = uuidv4();
 
   return (
     <>
-      <ChatPage key={cid} convid={cid} />
+      <ChatPage key={id} convid={id} chat={[]}  />
     </>
   );
 }

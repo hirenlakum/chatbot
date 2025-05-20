@@ -11,10 +11,10 @@ export async function POST(req: Request, context: { params: { id: string } }) {
     const conversatggionId = context.params.id;
 
     const { messages } = await req.json();
-    console.log(messages);
+  
 
     let latestPrompt = messages[messages.length - 1];
-
+    
     let ccid;
 
     const isAlreadyConversation = await prisma.conversation.findUnique({
@@ -40,16 +40,26 @@ export async function POST(req: Request, context: { params: { id: string } }) {
 
     const results = streamText({
       model: google("gemini-2.0-flash"),
-      prompt: latestPrompt.content,
+      messages: messages,
       async onFinish(finalResponse) {
         console.log("onfinish start");
         try {
-          const newMessage = await prisma.message.create({
-            data: {
-              content: latestPrompt.content,
-              responce: finalResponse.text,
-              conversationId: ccid,
-            },
+          const newMessage = await prisma.message.createMany({
+            data: [
+              {
+                content: latestPrompt.content,
+                responce: "",
+                conversationId: ccid,
+                role: "user",
+              },
+
+              {
+                content: "",
+                responce: finalResponse.text,
+                conversationId: ccid,
+                role: "assistant",
+              },
+            ],
           });
           console.log(newMessage);
         } catch (error) {

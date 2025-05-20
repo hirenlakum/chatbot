@@ -41,6 +41,21 @@ export interface chatBody{
     responce:string
 }
 
+export interface partBody{
+    type:string,
+    text:string
+}
+export interface chatBodyProps{
+    id:string,
+    content:string,
+    responce:string
+    role:"system" | "user" | "assistant" | "data"
+}
+
 export interface myPropsBody{
-    convid:string
+    convid:string,
+    chat:chatBodyProps[]|undefined,
+   
+    
+   
 }

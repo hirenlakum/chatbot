@@ -2171,6 +2171,7 @@ export namespace Prisma {
     content: string | null
     responce: string | null
     conversationId: string | null
+    role: string | null
   }
 
   export type MessageMaxAggregateOutputType = {
@@ -2178,6 +2179,7 @@ export namespace Prisma {
     content: string | null
     responce: string | null
     conversationId: string | null
+    role: string | null
   }
 
   export type MessageCountAggregateOutputType = {
@@ -2185,6 +2187,7 @@ export namespace Prisma {
     content: number
     responce: number
     conversationId: number
+    role: number
     _all: number
   }
 
@@ -2194,6 +2197,7 @@ export namespace Prisma {
     content?: true
     responce?: true
     conversationId?: true
+    role?: true
   }
 
   export type MessageMaxAggregateInputType = {
@@ -2201,6 +2205,7 @@ export namespace Prisma {
     content?: true
     responce?: true
     conversationId?: true
+    role?: true
   }
 
   export type MessageCountAggregateInputType = {
@@ -2208,6 +2213,7 @@ export namespace Prisma {
     content?: true
     responce?: true
     conversationId?: true
+    role?: true
     _all?: true
   }
 
@@ -2288,6 +2294,7 @@ export namespace Prisma {
     content: string
     responce: string
     conversationId: string
+    role: string
     _count: MessageCountAggregateOutputType | null
     _min: MessageMinAggregateOutputType | null
     _max: MessageMaxAggregateOutputType | null
@@ -2312,6 +2319,7 @@ export namespace Prisma {
     content?: boolean
     responce?: boolean
     conversationId?: boolean
+    role?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
@@ -2320,6 +2328,7 @@ export namespace Prisma {
     content?: boolean
     responce?: boolean
     conversationId?: boolean
+    role?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
@@ -2328,6 +2337,7 @@ export namespace Prisma {
     content?: boolean
     responce?: boolean
     conversationId?: boolean
+    role?: boolean
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
@@ -2336,9 +2346,10 @@ export namespace Prisma {
     content?: boolean
     responce?: boolean
     conversationId?: boolean
+    role?: boolean
   }
 
-  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "responce" | "conversationId", ExtArgs["result"]["message"]>
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "responce" | "conversationId" | "role", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
   }
@@ -2359,6 +2370,7 @@ export namespace Prisma {
       content: string
       responce: string
       conversationId: string
+      role: string
     }, ExtArgs["result"]["message"]>
     composites: {}
   }
@@ -2787,6 +2799,7 @@ export namespace Prisma {
     readonly content: FieldRef<"Message", 'String'>
     readonly responce: FieldRef<"Message", 'String'>
     readonly conversationId: FieldRef<"Message", 'String'>
+    readonly role: FieldRef<"Message", 'String'>
   }
     
 
@@ -4303,7 +4316,8 @@ export namespace Prisma {
     id: 'id',
     content: 'content',
     responce: 'responce',
-    conversationId: 'conversationId'
+    conversationId: 'conversationId',
+    role: 'role'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -4438,6 +4452,7 @@ export namespace Prisma {
     content?: StringFilter<"Message"> | string
     responce?: StringFilter<"Message"> | string
     conversationId?: StringFilter<"Message"> | string
+    role?: StringFilter<"Message"> | string
     conversation?: XOR<ConversationScalarRelationFilter, ConversationWhereInput>
   }
 
@@ -4446,6 +4461,7 @@ export namespace Prisma {
     content?: SortOrder
     responce?: SortOrder
     conversationId?: SortOrder
+    role?: SortOrder
     conversation?: ConversationOrderByWithRelationInput
   }
 
@@ -4457,6 +4473,7 @@ export namespace Prisma {
     content?: StringFilter<"Message"> | string
     responce?: StringFilter<"Message"> | string
     conversationId?: StringFilter<"Message"> | string
+    role?: StringFilter<"Message"> | string
     conversation?: XOR<ConversationScalarRelationFilter, ConversationWhereInput>
   }, "id">
 
@@ -4465,6 +4482,7 @@ export namespace Prisma {
     content?: SortOrder
     responce?: SortOrder
     conversationId?: SortOrder
+    role?: SortOrder
     _count?: MessageCountOrderByAggregateInput
     _max?: MessageMaxOrderByAggregateInput
     _min?: MessageMinOrderByAggregateInput
@@ -4478,6 +4496,7 @@ export namespace Prisma {
     content?: StringWithAggregatesFilter<"Message"> | string
     responce?: StringWithAggregatesFilter<"Message"> | string
     conversationId?: StringWithAggregatesFilter<"Message"> | string
+    role?: StringWithAggregatesFilter<"Message"> | string
   }
 
   export type ConversationWhereInput = {
@@ -4583,6 +4602,7 @@ export namespace Prisma {
     id?: string
     content: string
     responce: string
+    role: string
     conversation: ConversationCreateNestedOneWithoutMessagesInput
   }
 
@@ -4591,12 +4611,14 @@ export namespace Prisma {
     content: string
     responce: string
     conversationId: string
+    role: string
   }
 
   export type MessageUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     responce?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     conversation?: ConversationUpdateOneRequiredWithoutMessagesNestedInput
   }
 
@@ -4605,6 +4627,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     responce?: StringFieldUpdateOperationsInput | string
     conversationId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageCreateManyInput = {
@@ -4612,12 +4635,14 @@ export namespace Prisma {
     content: string
     responce: string
     conversationId: string
+    role: string
   }
 
   export type MessageUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     responce?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageUncheckedUpdateManyInput = {
@@ -4625,6 +4650,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     responce?: StringFieldUpdateOperationsInput | string
     conversationId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
   }
 
   export type ConversationCreateInput = {
@@ -4750,6 +4776,7 @@ export namespace Prisma {
     content?: SortOrder
     responce?: SortOrder
     conversationId?: SortOrder
+    role?: SortOrder
   }
 
   export type MessageMaxOrderByAggregateInput = {
@@ -4757,6 +4784,7 @@ export namespace Prisma {
     content?: SortOrder
     responce?: SortOrder
     conversationId?: SortOrder
+    role?: SortOrder
   }
 
   export type MessageMinOrderByAggregateInput = {
@@ -4764,6 +4792,7 @@ export namespace Prisma {
     content?: SortOrder
     responce?: SortOrder
     conversationId?: SortOrder
+    role?: SortOrder
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -5129,12 +5158,14 @@ export namespace Prisma {
     id?: string
     content: string
     responce: string
+    role: string
   }
 
   export type MessageUncheckedCreateWithoutConversationInput = {
     id?: string
     content: string
     responce: string
+    role: string
   }
 
   export type MessageCreateOrConnectWithoutConversationInput = {
@@ -5194,6 +5225,7 @@ export namespace Prisma {
     content?: StringFilter<"Message"> | string
     responce?: StringFilter<"Message"> | string
     conversationId?: StringFilter<"Message"> | string
+    role?: StringFilter<"Message"> | string
   }
 
   export type ConversationCreateManyUserInput = {
@@ -5226,24 +5258,28 @@ export namespace Prisma {
     id?: string
     content: string
     responce: string
+    role: string
   }
 
   export type MessageUpdateWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     responce?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageUncheckedUpdateWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     responce?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageUncheckedUpdateManyWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     responce?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
   }
 
 

@@ -7,25 +7,31 @@ import { chatHistoryBody } from "../types/page";
 import { useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { chatBody } from "../types/page";
 
-const ChatPage: React.FC<myPropsBody> = ({ convid }) => {
- 
-  console.log(convid);
+const ChatPage: React.FC<myPropsBody> = ({ convid, chat }) => {
+  console.log(chat);
   const { input, handleInputChange, handleSubmit, messages } = useChat({
     api: `/api/chat/${convid}`,
+    initialMessages:
+      chat?.flatMap((item) => ({
+        id: item.id,
+        role: item.role,
+        content: item.content,
+        parts: [
+          {
+            type: "text",
+            text: item.role === "user" ? item.content : item.responce,
+          },
+        ],
+      })) || undefined,
     onFinish: () => {
       window.history.replaceState({}, "", `/c/${convid}`);
     },
   });
 
   const [history, setHistory] = useState<chatHistoryBody[]>();
-  
 
   useEffect(() => {
-
- 
-
     const fetch_user_chat_history = async () => {
       const res = await axios.get("/api/user_chat_history");
       setHistory(res.data?.history?.conversations);
@@ -35,7 +41,7 @@ const ChatPage: React.FC<myPropsBody> = ({ convid }) => {
   }, []);
 
   const filterData = history?.filter((value: any) => value.conid !== convid);
-  console.log(filterData);
+
   return (
     <>
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -43,17 +49,14 @@ const ChatPage: React.FC<myPropsBody> = ({ convid }) => {
           <h1 className="text-center text-xl">AI Chatbot</h1>
           <div className="flex space-x-6">
             <div className="flex-1 overflow-auto max-h-[500px] bg-gray-50 p-4 rounded-lg">
-
-   
-
               {messages.length == 0 ? (
                 <h1 className="font-bold text-2xl text-center mt-[200px]">
                   What Can I Help With??
                 </h1>
               ) : (
                 <div className="space-y-4">
-                  {messages.map((message) => (
-                    <div key={message.id} className="whitespace-pre-wrap">
+                  {messages.map((message, index) => (
+                    <div key={index} className="whitespace-pre-wrap">
                       {message.role === "user" ? "User: " : "assistant: "}
                       {message.parts.map((part, i) => {
                         switch (part.type) {
