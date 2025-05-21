@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { chatBody } from "@/app/types/page";
 import ChatPage from "@/app/components/chat";
 import { chatBodyProps } from "@/app/types/page";
 

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@/generated/prisma";
 const prisma = new PrismaClient();
+import { cookies } from "next/headers";
+import { jwtVerify } from "jose";
 
 export async function GET(
   req: Request,
@@ -9,9 +11,14 @@ export async function GET(
   try {
     const id = params.id;
 
- 
-    const userId = req.headers.get("userId");
-  
+    const token = (await cookies()).get("token")?.value;
+
+    const { payload } = await jwtVerify(
+      token!,
+      new TextEncoder().encode(process.env.SECRET_KEY)
+    );
+
+    const userId = payload.userId as string;
 
     const conversationWithMessages = await prisma.conversation.findUnique({
       where: {

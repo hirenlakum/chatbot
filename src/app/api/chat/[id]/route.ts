@@ -1,20 +1,28 @@
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { streamText, tool } from "ai";
 import { PrismaClient } from "@/generated/prisma";
 import { converSationBody } from "@/app/types/page";
+import { cookies } from "next/headers";
+import { jwtVerify } from "jose";
 const prisma = new PrismaClient();
 
 export async function POST(req: Request, context: { params: { id: string } }) {
   try {
-    const userId = req.headers.get("userId");
+    const token = (await cookies()).get("token")?.value;
+
+    const { payload } = await jwtVerify(
+      token!,
+      new TextEncoder().encode(process.env.SECRET_KEY)
+    );
+
+    const userId = payload.userId as string;
 
     const conversatggionId = context.params.id;
 
     const { messages } = await req.json();
-  
 
     let latestPrompt = messages[messages.length - 1];
-    
+
     let ccid;
 
     const isAlreadyConversation = await prisma.conversation.findUnique({
@@ -36,13 +44,13 @@ export async function POST(req: Request, context: { params: { id: string } }) {
       ccid = conversatggionId;
     }
 
-    console.log(isAlreadyConversation);
+    console.log("conversation id:", isAlreadyConversation);
 
     const results = streamText({
       model: google("gemini-2.0-flash"),
       messages: messages,
+
       async onFinish(finalResponse) {
-        console.log("onfinish start");
         try {
           const newMessage = await prisma.message.createMany({
             data: [
@@ -52,7 +60,6 @@ export async function POST(req: Request, context: { params: { id: string } }) {
                 conversationId: ccid,
                 role: "user",
               },
-
               {
                 content: "",
                 responce: finalResponse.text,
@@ -65,8 +72,6 @@ export async function POST(req: Request, context: { params: { id: string } }) {
         } catch (error) {
           console.log(`error in prisma ${error}`);
         }
-
-        console.log("onfinish end ..");
       },
     });
 

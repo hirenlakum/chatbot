@@ -41,6 +41,10 @@ export interface chatBody{
     responce:string
 }
 
+export interface MarkDownPropsBody{
+    content:string
+}
+
 export interface partBody{
     type:string,
     text:string
@@ -56,6 +60,32 @@ export interface myPropsBody{
     convid:string,
     chat:chatBodyProps[]|undefined,
    
-    
+}
+
+export interface chartBodyProps{
    
+    chartSelect:string,
+    Chdata:{
+    
+ type:"bar" | "line" | "pie" | "doughnut",
+      data: {
+  
+    labels: string[],
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string | string[];
+      borderColor?:string,
+      borderWidth?:number,
+      tension?:number
+
+    }[];
+  };
+    }
+     
+}
+
+export interface togglePropsBody{
+  toggleValue:boolean,
+  onToggle:(data:any)=>void
 }

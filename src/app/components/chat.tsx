@@ -1,15 +1,14 @@
 "use client";
 import { useChat } from "@ai-sdk/react";
 import { myPropsBody } from "../types/page";
-import { useEffect } from "react";
-import React from "react";
-import { chatHistoryBody } from "../types/page";
-import { useState } from "react";
-import axios from "axios";
-import Link from "next/link";
+import React, { useState } from "react";
+import History_Side_Bar from "./History_Side_Bar";
+import MarkDown from "./markDownViewr";
+import BarChart from "./chartProvider";
+import ChartToggle from "./chartToggle";
+
 
 const ChatPage: React.FC<myPropsBody> = ({ convid, chat }) => {
-  console.log(chat);
   const { input, handleInputChange, handleSubmit, messages } = useChat({
     api: `/api/chat/${convid}`,
     initialMessages:
@@ -24,53 +23,170 @@ const ChatPage: React.FC<myPropsBody> = ({ convid, chat }) => {
           },
         ],
       })) || undefined,
-    onFinish: () => {
+    onResponse: () => {
       window.history.replaceState({}, "", `/c/${convid}`);
     },
   });
 
-  const [history, setHistory] = useState<chatHistoryBody[]>();
+  const [isToggle, setIsToggle] = useState(false);
 
-  useEffect(() => {
-    const fetch_user_chat_history = async () => {
-      const res = await axios.get("/api/user_chat_history");
-      setHistory(res.data?.history?.conversations);
-    };
+  const handleToggle = (data: any) => {
+    setIsToggle(data);
+  };
 
-    fetch_user_chat_history();
-  }, []);
+  const detactJson = (text: string) => {
+    const isdetectJsonData = text.match(/```json([\s\S]*?)```/);
 
-  const filterData = history?.filter((value: any) => value.conid !== convid);
+    if (isdetectJsonData && isdetectJsonData[1]) {
+      return isdetectJsonData[1];
+    }
+    return text;
+  };
+
+  const [chartSelections, setChartSelections] = useState<{
+    [key: number]: string;
+  }>({});
+
+  
+  const handleChartSelect = (index: number, value: string) => {
+    setChartSelections((prev) => ({ ...prev, [index]: value }));
+  };
 
   return (
     <>
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 flex flex-col space-y-6">
-          <h1 className="text-center text-xl">AI Chatbot</h1>
-          <div className="flex space-x-6">
-            <div className="flex-1 overflow-auto max-h-[500px] bg-gray-50 p-4 rounded-lg">
-              {messages.length == 0 ? (
-                <h1 className="font-bold text-2xl text-center mt-[200px]">
-                  What Can I Help With??
-                </h1>
-              ) : (
-                <div className="space-y-4">
-                  {messages.map((message, index) => (
-                    <div key={index} className="whitespace-pre-wrap">
-                      {message.role === "user" ? "User: " : "assistant: "}
+      <div className="flex">
+        <History_Side_Bar />
+
+        <div className="flex flex-col h-screen  overflow-y-auto w-full bg-[#121212] custom-scrollbar text-white">
+          <div className="bg-black text-white text-xl font-bold p-4 border-b border-gray-700 shadow-sm text-center">
+            AI ChatBot
+            <ChartToggle toggleValue={isToggle} onToggle={handleToggle} />
+          </div>
+
+          {messages.length === 0 && (
+            <div className="text-center  text-gray-400 mt-[300px]">
+              <h2 className="text-xl md:text-2xl font-medium">
+                What can I help you with?
+              </h2>
+              <p className="text-sm md:text-base mt-2 text-gray-500">
+                Ask anything — I'm here to assist you!
+              </p>
+            </div>
+          )}
+
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll">
+            <div className="space-y-4">
+              {isToggle
+                ? messages.map((message, index) => (
+                    <div key={index} className="whitespace-pre-wrap flex-1">
+                      {message.role === "user" ? (
+                        <div className="text-right">User:</div>
+                      ) : (
+                        "assistant:"
+                      )}
+
+                      {message.parts.map((part, i) => {
+                        switch (part.type) {
+                          case "text":
+                            let chartData = null;
+
+                            try {
+                              const jsonData = detactJson(part.text);
+                              chartData = JSON.parse(jsonData);
+                            } catch (error) {
+                              chartData = null;
+                            }
+
+                            if (
+                              chartData &&
+                              chartData.type &&
+                              Array.isArray(chartData.data?.labels) &&
+                              Array.isArray(chartData.data.datasets)
+                            ) {
+                              console.log(
+                                "yaha chart wale me condition true ho rahi he"
+                              );
+                             
+
+                              return (
+                                <>
+                                  <form>
+                                    <select
+                                      className="bg-black"
+                                      value={chartSelections[index] || ""}
+                                      onChange={(e) =>
+                                        handleChartSelect(index, e.target.value)
+                                      }
+                                    >
+                                      <option value="">Select Chart</option>
+                                      <option value="bar">Bar Chart</option>
+                                      <option value="pie">Pie Chart</option>
+                                      <option value="line">Line Chart</option>
+                                      <option value="doughnut">Doughnut</option>
+                                    </select>
+                                  </form>
+
+                                  <div key={i} className="w-[600px] h-[300px]">
+                                    <BarChart
+                                      chartSelect={chartSelections[index] || ""}
+                                      key={i}
+                                      Chdata={chartData}
+                                    />
+                                  </div>
+                                </>
+                              );
+                            } else {
+                              return message.role === "user" ? (
+                                <div
+                                  key={message.id}
+                                  className="text-right mt-2  "
+                                >
+                                  <div className="bg-slate-700  text-white p-3 rounded-lg inline-block">
+                                    {part.text}
+                                  </div>
+                                </div>
+                              ) : (
+                                <div
+                                  key={message.id}
+                                  className="text-left mt-2 w-[600px]"
+                                >
+                                  <div className=" bg-gray-800  self-start text-gray-200 p-3 rounded-lg inline-block">
+                                    <MarkDown content={part.text}></MarkDown>
+                                  </div>
+                                </div>
+                              );
+                            }
+                        }
+                      })}
+                    </div>
+                  ))
+                : messages.map((message, index) => (
+                    <div key={index} className="whitespace-pre-wrap flex-1">
+                      {message.role === "user" ? (
+                        <div className="text-right">User:</div>
+                      ) : (
+                        "assistant:"
+                      )}
+
                       {message.parts.map((part, i) => {
                         switch (part.type) {
                           case "text":
                             return message.role === "user" ? (
-                              <div key={message.id} className="text-left">
-                                <div className="bg-blue-500 text-white p-3 rounded-lg inline-block">
+                              <div
+                                key={message.id}
+                                className="text-right mt-2  "
+                              >
+                                <div className="bg-slate-700  text-white p-3 rounded-lg inline-block">
                                   {part.text}
                                 </div>
                               </div>
                             ) : (
-                              <div key={message.id} className="text-left">
-                                <div className="bg-gray-300 text-gray-800 p-3 rounded-lg inline-block">
-                                  {part.text}
+                              <div
+                                key={message.id}
+                                className="text-left mt-2 w-[600px]"
+                              >
+                                <div className=" bg-gray-800  self-start text-gray-200 p-3 rounded-lg inline-block">
+                                  <MarkDown content={part.text}></MarkDown>
                                 </div>
                               </div>
                             );
@@ -78,44 +194,21 @@ const ChatPage: React.FC<myPropsBody> = ({ convid, chat }) => {
                       })}
                     </div>
                   ))}
-                </div>
-              )}
-            </div>
-
-            <div className="w-1/3 bg-gray-200 p-4 rounded-lg max-h-[500px] overflow-y-auto">
-              <h3 className="font-semibold text-lg text-gray-700 mb-4">
-                Chat History
-              </h3>
-
-              <div className="space-y-3">
-                {filterData?.map((value: any) => {
-                  return (
-                    <div key={value.id} className="bg-gray-100 p-2 rounded-lg">
-                      <Link
-                        className="font-semibold"
-                        href={`/c/${value.conid}`}
-                      >
-                        {value?.messages[0]?.content}
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
           </div>
 
-          <form className="flex space-x-4" onSubmit={handleSubmit}>
+          <form
+            onSubmit={handleSubmit}
+            className="p-4 bg-[#1e1e1e] border-t border-gray-700 flex items-center gap-3"
+          >
             <input
               type="text"
-              placeholder="Type your message..."
               value={input}
               onChange={handleInputChange}
-              className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ask something..."
+              className="flex-1 px-4 py-2 rounded-full bg-[#2a2a2a] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-3 rounded-lg focus:outline-none hover:bg-blue-600"
-            >
+            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-all">
               Send
             </button>
           </form>
